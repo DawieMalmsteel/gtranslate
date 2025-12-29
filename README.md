@@ -24,6 +24,8 @@ Using [lazy.nvim](https://github.com/folke/lazy.nvim):
             target_lang = "vi", -- Default target language
             gemini_api_key = os.getenv("GEMINI_API_KEY"), -- Or paste your key directly here
             gemini_model = "gemini-2.0-flash", -- Gemini model to use
+            google_url = "https://translate.googleapis.com/translate_a/single", -- Proxy/Custom Google API
+            gemini_url = "https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent?key=%s", -- Custom Gemini API URL
             width_percent = 0.4, -- Results window width (40%)
         })
     end,
@@ -47,6 +49,8 @@ require("gtranslate").setup({
   width_percent = 0.5,  -- Window width (0.1 to 0.9)
   gemini_api_key = nil, -- API Key for Atrans command
   gemini_model = "gemini-2.0-flash", -- Gemini model to use
+  google_url = "https://translate.googleapis.com/translate_a/single", -- Custom Google API URL
+  gemini_url = "https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent?key=%s", -- Custom Gemini API URL
 })
 ```
 

@@ -2,8 +2,7 @@ local M = {}
 
 local uv = vim.loop
 
-local function build_cmd(text, source_lang, target_lang)
-  local base_url = "https://translate.googleapis.com/translate_a/single"
+local function build_cmd(text, source_lang, target_lang, base_url)
   return {
     "curl",
     "-s",
@@ -47,13 +46,13 @@ local function parse_translation(raw)
   return table.concat(parts), nil
 end
 
-function M.translate(text, source_lang, target_lang, callback)
+function M.translate(text, source_lang, target_lang, url, callback)
   if not text or text == "" then
     callback(nil, "no text provided")
     return
   end
 
-  local cmd = build_cmd(text, source_lang, target_lang)
+  local cmd = build_cmd(text, source_lang, target_lang, url)
   local stdout = {}
 
   vim.fn.jobstart(cmd, {
@@ -147,7 +146,7 @@ local function parse_gemini_response(raw)
   return ultimate_clean(text), nil
 end
 
-function M.ai_translate(text, target_lang, api_key, model, callback)
+function M.ai_translate(text, target_lang, api_key, model, url_template, callback)
   if not text or text == "" then
     callback(nil, "no text provided")
     return
@@ -170,7 +169,7 @@ Rules:
     }
   }
 
-  local url = string.format("https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent?key=%s", model, api_key)
+  local url = string.format(url_template, model, api_key)
   local cmd = {
     "curl",
     "-s",

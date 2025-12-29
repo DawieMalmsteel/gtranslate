@@ -25,6 +25,8 @@ M.config = {
   width_percent = 0.5, -- 50% width
   gemini_api_key = os.getenv("GEMINI_API_KEY"),
   gemini_model = "gemini-2.0-flash",
+  google_url = "https://translate.googleapis.com/translate_a/single",
+  gemini_url = "https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent?key=%s",
 }
 
 local function normalize_lang(code)
@@ -155,10 +157,11 @@ function M.translate(opts)
 
   local source = coerce_lang(opts and opts.source, M.config.source_lang, "source")
   local target = coerce_lang(opts and opts.target, M.config.target_lang, "target")
+  local url = (opts and opts.google_url) or M.config.google_url
 
   ui.show_result("Translating...", M.config.width_percent)
 
-  api.translate(text, source, target, function(result, err)
+  api.translate(text, source, target, url, function(result, err)
     if err then
       ui.show_result("Error: " .. err, M.config.width_percent)
     else
@@ -186,10 +189,11 @@ function M.ai_translate(opts)
   local target = coerce_lang(opts and opts.target, M.config.target_lang, "target")
   local target_label = languages[target] or target
   local model = (opts and opts.model) or M.config.gemini_model
+  local url_template = (opts and opts.gemini_url) or M.config.gemini_url
 
   ui.show_result("Translating with Gemini AI...", M.config.width_percent)
 
-  api.ai_translate(text, target_label, api_key, model, function(result, err)
+  api.ai_translate(text, target_label, api_key, model, url_template, function(result, err)
     if err then
       ui.show_result("AI Error: " .. err, M.config.width_percent)
     else

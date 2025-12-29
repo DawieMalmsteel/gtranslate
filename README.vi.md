@@ -24,6 +24,8 @@ Sử dụng [lazy.nvim](https://github.com/folke/lazy.nvim):
             target_lang = "vi", -- Ngôn ngữ đích mặc định
             gemini_api_key = os.getenv("GEMINI_API_KEY"), -- Hoặc dán trực tiếp key vào đây
             gemini_model = "gemini-2.0-flash", -- Model Gemini sử dụng
+            google_url = "https://translate.googleapis.com/translate_a/single", -- URL API Google tùy chỉnh
+            gemini_url = "https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent?key=%s", -- URL API Gemini tùy chỉnh
             width_percent = 0.4, -- Độ rộng cửa sổ kết quả (40%)
         })
     end,
@@ -47,6 +49,8 @@ require("gtranslate").setup({
   width_percent = 0.5,  -- Chiều rộng cửa sổ (0.1 đến 0.9)
   gemini_api_key = nil, -- API Key cho lệnh Atrans
   gemini_model = "gemini-2.0-flash", -- Model Gemini sử dụng
+  google_url = "https://translate.googleapis.com/translate_a/single", -- URL API Google tùy chỉnh
+  gemini_url = "https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent?key=%s", -- URL API Gemini tùy chỉnh
 })
 ```
 
