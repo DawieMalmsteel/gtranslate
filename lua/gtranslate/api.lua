@@ -147,7 +147,7 @@ local function parse_gemini_response(raw)
   return ultimate_clean(text), nil
 end
 
-function M.ai_translate(text, target_lang, api_key, callback)
+function M.ai_translate(text, target_lang, api_key, model, callback)
   if not text or text == "" then
     callback(nil, "no text provided")
     return
@@ -170,7 +170,7 @@ Rules:
     }
   }
 
-  local url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" .. api_key
+  local url = string.format("https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent?key=%s", model, api_key)
   local cmd = {
     "curl",
     "-s",

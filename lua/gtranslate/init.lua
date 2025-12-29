@@ -24,6 +24,7 @@ M.config = {
   target_lang = "vi",
   width_percent = 0.5, -- 50% width
   gemini_api_key = os.getenv("GEMINI_API_KEY"),
+  gemini_model = "gemini-2.0-flash",
 }
 
 local function normalize_lang(code)
@@ -184,10 +185,11 @@ function M.ai_translate(opts)
 
   local target = coerce_lang(opts and opts.target, M.config.target_lang, "target")
   local target_label = languages[target] or target
+  local model = (opts and opts.model) or M.config.gemini_model
 
   ui.show_result("Translating with Gemini AI...", M.config.width_percent)
 
-  api.ai_translate(text, target_label, api_key, function(result, err)
+  api.ai_translate(text, target_label, api_key, model, function(result, err)
     if err then
       ui.show_result("AI Error: " .. err, M.config.width_percent)
     else
