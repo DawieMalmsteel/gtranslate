@@ -1,0 +1,7 @@
+.DS_Store
+*.swp
+*.swo
+*~
+.netrwhist
+/test_gemini.lua
+# /minimal.lua
