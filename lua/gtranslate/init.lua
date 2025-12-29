@@ -60,12 +60,46 @@ local function coerce_lang(code, fallback, label)
   return fallback
 end
 
+local function wrap_for_translation(content, filetype)
+  if not filetype or filetype == "" then
+    return content
+  end
+  return string.format("```%s\n%s\n```", filetype, content)
+end
+
+-- Lấy text được chọn trong visual mode
+local function get_visual_selection()
+  local _, srow, scol = unpack(vim.fn.getpos("'<"))
+  local _, erow, ecol = unpack(vim.fn.getpos("'>"))
+
+  if srow > erow or (srow == erow and scol > ecol) then
+    srow, erow = erow, srow
+    scol, ecol = ecol, scol
+  end
+
+  local lines = vim.api.nvim_buf_get_lines(0, srow - 1, erow, false)
+
+  if #lines == 0 then
+    return ""
+  end
+
+  if #lines == 1 then
+    lines[1] = string.sub(lines[1], scol, ecol)
+  else
+    lines[1] = string.sub(lines[1], scol)
+    lines[#lines] = string.sub(lines[#lines], 1, ecol)
+  end
+
+  return table.concat(lines, "\n")
+end
+
 function M.setup(opts)
   M.config = vim.tbl_deep_extend("force", M.config, opts or {})
 end
 
 function M.translate(opts)
   local text = get_visual_selection()
+  local source_ft = vim.api.nvim_buf_get_option(0, "filetype")
 
   if text == "" then
     vim.notify("No text selected", vim.log.levels.WARN)
@@ -81,9 +115,11 @@ function M.translate(opts)
     if err then
       ui.show_result("Error: " .. err, M.config.width_percent)
     else
-      ui.show_result(result, M.config.width_percent)
+      local wrapped_result = wrap_for_translation(result, source_ft)
+      ui.show_result(wrapped_result, M.config.width_percent)
     end
   end)
 end
 
 return M
+

@@ -9,14 +9,25 @@ local state = {
 local function set_buffer_lines(buf, content)
   api.nvim_buf_set_option(buf, "modifiable", true)
   api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(content, "\n"))
-  api.nvim_buf_set_option(buf, "modifiable", false)
 end
 
-local function create_buffer(content, filetype)
+local function create_buffer(content)
   local buf = api.nvim_create_buf(false, true)
-  api.nvim_buf_set_option(buf, "filetype", filetype)
+  api.nvim_buf_set_option(buf, "filetype", "markdown")
   api.nvim_buf_set_option(buf, "bufhidden", "wipe")
   api.nvim_buf_set_option(buf, "buftype", "nofile")
+  api.nvim_buf_set_option(buf, "modifiable", true)
+  set_buffer_lines(buf, content)
+  return buf
+end
+
+
+local function create_buffer(content)
+  local buf = api.nvim_create_buf(false, true)
+  api.nvim_buf_set_option(buf, "filetype", "markdown")
+  api.nvim_buf_set_option(buf, "bufhidden", "wipe")
+  api.nvim_buf_set_option(buf, "buftype", "nofile")
+  api.nvim_buf_set_option(buf, "modifiable", true)
   set_buffer_lines(buf, content)
   return buf
 end
@@ -52,7 +63,7 @@ function M.show_result(content, width_percent)
     return
   end
 
-  local buf = create_buffer(content, "markdown")
+  local buf = create_buffer(content)
   local win = show_split(buf, width_percent)
   state.win = win
   state.buf = buf
