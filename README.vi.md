@@ -19,7 +19,7 @@ Sử dụng [lazy.nvim](https://github.com/folke/lazy.nvim):
 
 ```lua
 {
-    "DawieMalmsteel/gtranslate", -- Thay đổi sau khi bạn push lên GitHub
+    "DawieMalmsteel/gtranslate",
     config = function()
         require("gtranslate").setup({
             target_lang = "vi", -- Ngôn ngữ đích mặc định

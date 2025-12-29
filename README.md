@@ -19,7 +19,7 @@ Using [lazy.nvim](https://github.com/folke/lazy.nvim):
 
 ```lua
 {
-    "DawieMalmsteel/gtranslate", -- Change after you push to GitHub
+    "DawieMalmsteel/gtranslate",
     config = function()
         require("gtranslate").setup({
             target_lang = "en", -- Default target language
