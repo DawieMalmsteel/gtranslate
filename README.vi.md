@@ -1,4 +1,4 @@
-**Tiếng Việt** | [**English**](file:///home/dwcks/Projects/gtranslate/README.md)
+**Tiếng Việt** | [**English**](README.md)
 
 # gtranslate.nvim
 
@@ -8,6 +8,7 @@ Một plugin Neovim nhẹ nhàng và mạnh mẽ để dịch văn bản/tài li
 
 - **Dịch nhanh (Gtrans)**: Sử dụng Google Translate API (miễn phí, không cần key).
 - **Dịch thông minh (Atrans)**: Sử dụng Gemini AI để dịch tài liệu chuẩn xác hơn, giữ nguyên ngữ cảnh.
+- **Giải thích code (Etrans)**: Sử dụng Gemini AI để vừa dịch vừa giải thích chi tiết đoạn code/văn bản.
 - **Tự động nhận diện ngôn ngữ**: Tự động xác định ngôn ngữ nguồn.
 - **Highlight cú pháp**: Bản dịch được hiển thị trong cửa sổ split với highlight đúng theo `filetype` của code (ví dụ: bôi đen code lua trong docs sẽ hiện kết quả highlight lua).
 - **Hỗ trợ Float/Hover docs**: Có thể dịch trực tiếp từ các cửa sổ hover lsp, noice, v.v. (Tự động nhảy về cửa sổ chính để mở split).
@@ -18,7 +19,7 @@ Sử dụng [lazy.nvim](https://github.com/folke/lazy.nvim):
 
 ```lua
 {
-    "your-username/gtranslate", -- Thay đổi sau khi bạn push lên GitHub
+    "DawieMalmsteel/gtranslate", -- Thay đổi sau khi bạn push lên GitHub
     config = function()
         require("gtranslate").setup({
             target_lang = "vi", -- Ngôn ngữ đích mặc định
@@ -35,7 +36,7 @@ Sử dụng [lazy.nvim](https://github.com/folke/lazy.nvim):
 Sử dụng [vim-plug](https://github.com/junegunn/vim-plug):
 
 ```vim
-Plug 'your-username/gtranslate'
+Plug 'DawieMalmsteel/gtranslate'
 ```
 
 ## ⚙️ Cấu hình
@@ -71,6 +72,8 @@ Truy cập [Google AI Studio](https://aistudio.google.com/app/apikey) để tạ
      - Ví dụ: `:Gtrans en` (dịch sang tiếng Anh), nếu không điền sẽ lấy mặc định (`vi`).
    - `:Atrans [target_lang]`: Dịch bằng Gemini AI (Yêu cầu API Key).
      - Ví dụ: `:Atrans ja` (dịch sang tiếng Nhật bằng AI).
+   - `:Etrans [target_lang]`: Vừa dịch vừa giải thích bằng Gemini AI (Yêu cầu API Key).
+     - Ví dụ: `:Etrans vi` (dịch và giải thích bằng tiếng Việt).
 
 3. **Cửa sổ kết quả**:
    - Nhấn `q` để đóng nhanh cửa sổ kết quả dịch.
@@ -84,6 +87,8 @@ Bạn có thể thêm các phím tắt vào config để thao tác nhanh hơn:
 vim.keymap.set("v", "<leader>Gt", ":'<,'>Gtrans<CR>", { desc = "Dịch Google" })
 -- Dịch chuẩn bằng AI
 vim.keymap.set("v", "<leader>Ga", ":'<,'>Atrans<CR>", { desc = "Dịch Gemini AI" })
+-- Dịch và giải thích code
+vim.keymap.set("v", "<leader>Ge", ":'<,'>Etrans<CR>", { desc = "Dịch & Giải thích" })
 ```
 
 ## 🛠️ Yêu cầu

@@ -203,5 +203,38 @@ function M.ai_translate(opts)
   end)
 end
 
+function M.explain_translate(opts)
+  local text = get_visual_selection()
+  local source_ft = get_context_filetype()
+
+  if text == "" then
+    vim.notify("No text selected", vim.log.levels.WARN)
+    return
+  end
+
+  local api_key = (opts and opts.api_key) or M.config.gemini_api_key
+  if not api_key or api_key == "" then
+    vim.notify("Gemini API key not found. Set GEMINI_API_KEY env or pass it in setup()", vim.log.levels.ERROR)
+    return
+  end
+
+  local target = coerce_lang(opts and opts.target, M.config.target_lang, "target")
+  local target_label = languages[target] or target
+  local model = (opts and opts.model) or M.config.gemini_model
+  local url_template = (opts and opts.gemini_url) or M.config.gemini_url
+
+  ui.show_result("Explaining with Gemini AI...", M.config.width_percent)
+
+  api.explain_translate(text, target_label, api_key, model, url_template, function(result, err)
+    if err then
+      ui.show_result("AI Error: " .. err, M.config.width_percent)
+    else
+      -- For explanation, we might not want to wrap it in a code block if it has its own markdown
+      -- But let's wrap it in markdown filetype so it renders nicely
+      ui.show_result(result, M.config.width_percent, "markdown")
+    end
+  end)
+end
+
 return M
 

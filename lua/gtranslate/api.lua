@@ -206,4 +206,67 @@ Rules:
   })
 end
 
+function M.explain_translate(text, target_lang, api_key, model, url_template, callback)
+  if not text or text == "" then
+    callback(nil, "no text provided")
+    return
+  end
+
+  local prompt = string.format([[
+Translate the following code/text to %s AND explain it in detail.
+Rules:
+1. First, provide the translation.
+2. Then, provide a detailed explanation of what the code/text does.
+3. DO NOT use markdown code blocks or backticks to wrap your whole output (individual code blocks inside explanation are fine).
+4. Use clear headings for Translation and Explanation.
+5. Output in %s.
+]], target_lang, target_lang)
+
+  local payload = {
+    contents = {
+      {
+        parts = {
+          { text = prompt .. "\n\n" .. text }
+        }
+      }
+    }
+  }
+
+  local url = string.format(url_template, model, api_key)
+  local cmd = {
+    "curl",
+    "-s",
+    "-X", "POST",
+    url,
+    "-H", "Content-Type: application/json",
+    "-d", vim.fn.json_encode(payload)
+  }
+
+  local stdout = {}
+  vim.fn.jobstart(cmd, {
+    stdout_buffered = true,
+    on_stdout = function(_, data)
+      if data then
+        for _, line in ipairs(data) do
+          table.insert(stdout, line)
+        end
+      end
+    end,
+    on_exit = function(_, exit_code)
+      local raw = table.concat(stdout, "\n")
+      if exit_code ~= 0 then
+        callback(nil, "Gemini request failed")
+        return
+      end
+
+      local translated, err = parse_gemini_response(raw)
+      if err then
+        callback(nil, err)
+      else
+        callback(translated, nil)
+      end
+    end,
+  })
+end
+
 return M

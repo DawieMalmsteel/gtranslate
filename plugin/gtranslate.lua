@@ -22,3 +22,13 @@ end, {
   nargs = "*",
   desc = "Translate visual selection using Gemini AI (optional target code)",
 })
+
+vim.api.nvim_create_user_command("Etrans", function(opts)
+  local args = vim.split(opts.args or "", "%s+", { trimempty = true })
+  local override_target = args[1]
+  gtranslate.explain_translate({ target = override_target })
+end, {
+  range = 0,
+  nargs = "*",
+  desc = "Translate AND explain visual selection using Gemini AI (optional target code)",
+})

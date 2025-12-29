@@ -93,14 +93,17 @@ local function attach_quit_key(win)
   end, { buffer = buf, nowait = true, silent = true })
 end
 
-function M.show_result(content, width_percent)
+function M.show_result(content, width_percent, ft)
+  ft = ft or "markdown"
   if state.win and api.nvim_win_is_valid(state.win) and state.buf and api.nvim_buf_is_valid(state.buf) then
     set_buffer_lines(state.buf, content)
+    api.nvim_buf_set_option(state.buf, "filetype", ft)
     api.nvim_win_set_width(state.win, math.floor(api.nvim_get_option("columns") * width_percent))
     return
   end
 
   local buf = create_buffer(content)
+  api.nvim_buf_set_option(buf, "filetype", ft)
   local win = show_split(buf, width_percent)
   if not win then
     -- If split failed, we could try a floating window or at least not crash
